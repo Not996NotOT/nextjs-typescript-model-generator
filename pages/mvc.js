@@ -51,19 +51,35 @@ class CodeController {
 
   convertIApiCode() {
     let str = `import { IPagination } from "../models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName
+    ? `import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";`
+    : ""
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
 import { IPaginationParams } from "../models/param/IPaginationParams";
 
 export interface ${this.iApiName} {
-  /**
-   * @description getList
-   */
-  getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>>;
+${
+  this.iListModelDTOName &&
+  `/**
+* @description getList
+*/
+getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>>;`
+}
 
-  /**
-   * @description getDetail
-   */
-  getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;
+${
+  this.iDetailModelDTOName &&
+  `/**
+  * @description getDetail
+  */
+ getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;`
+}
 }`;
     this.IApiCode = str;
   }
@@ -72,12 +88,21 @@ export interface ${this.iApiName} {
     let str = `import { AbsBaseApi } from "../infrastructure/abstract/api/BaseApi";
 import { ${this.iApiName} } from "../interface/api/${this.iApiName}";
 import { IPagination } from "../interface/models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../interface/models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName &&
+  `import { ${this.iListModelDTOName} } from "../interface/models/dto/${this.iListModelDTOName}";`
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../interface/models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
 import { IPaginationParams } from "../interface/models/param/IPaginationParams";
       
 enum ${this.apiName}Enum {
-    GetList = "getlist",
-    GetDetail = "getdetail",
+${this.iListModelDTOName && `    GetList = "getlist",`}
+${this.iDetailModelDTOName && `    GetDetail = "getdetail",`}
 }
       
 export class ${this.apiName} extends AbsBaseApi implements ${this.iApiName} {
@@ -85,14 +110,20 @@ export class ${this.apiName} extends AbsBaseApi implements ${this.iApiName} {
           super();
         }
       
-    async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
-          const data = await this.axios.post(${this.apiName}Enum.GetList, params);
-          return data;
-        }
+    ${
+      this.iListModelDTOName &&
+      `async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
+            const data = await this.axios.post(${this.apiName}Enum.GetList, params);
+            return data;
+          }`
+    }
       
-    async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
-          const data = await this.axios.post(${this.apiName}Enum.GetDetail, params);
-          return data;
+    ${
+      this.iDetailModelDTOName &&
+      `async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
+            const data = await this.axios.post(${this.apiName}Enum.GetDetail, params);
+            return data;
+      }`
     }
 }`;
     this.apiCode = str;
@@ -100,18 +131,35 @@ export class ${this.apiName} extends AbsBaseApi implements ${this.iApiName} {
 
   convertIServiceCode() {
     let str = `import { IPagination } from "../models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName &&
+  `import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";`
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
 import { IPaginationParams } from "../models/param/IPaginationParams";
 
 export interface ${this.iServiceName} {
+${
+  this.iListModelDTOName &&
+  `
   /**
    * @description getList
    */
   getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>>;
-  /**
+`
+}
+${
+  this.iDetailModelDTOName &&
+  `/**
    * @description getDetail
    */
-  getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;
+  getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;`
+}
 }`;
     this.iServiceCode = str;
   }
@@ -120,20 +168,34 @@ export interface ${this.iServiceName} {
 import { AbsBaseService } from "../infrastructure/abstract/services/BaseService";
 import { ${this.iApiName} } from "../interface/api/${this.iApiName}";
 import { IPagination } from "../interface/models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../interface/models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName &&
+  `import { ${this.listModelDTOName} } from "../models/dto/${this.listModelDTOName}";`
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
 import { IPaginationParams } from "../interface/models/param/IPaginationParams";
-import { ${this.iServiceName} } from "../interface/services/${this.iServiceName}";
+import { ${this.iServiceName} } from "../interface/services/${
+      this.iServiceName
+    }";
 import { Pagination } from "../models/base/PaginationT";
 import { List } from "linqts";
-import { ${this.listModelDTOName} } from "../models/dto/${this.listModelDTOName}";
 
-export class ${this.serviceName} extends AbsBaseService implements ${this.iServiceName} {
+export class ${this.serviceName} extends AbsBaseService implements ${
+      this.iServiceName
+    } {
   api: ${this.iApiName};
   constructor() {
     super();
     this.api = new ${this.apiName}();
   }
-  async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
+${
+  this.iListModelDTOName &&
+  `async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
     const data = await this.api.getList(params);
     const page: IPagination<${this.iListModelDTOName}> = new Pagination();
     try {
@@ -141,45 +203,78 @@ export class ${this.serviceName} extends AbsBaseService implements ${this.iServi
       page.rows = data.rows.map((item) => new ${this.listModelDTOName}(item));
     } catch (e) {}
     return page;
-  }
-  async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
-    let dto = new ${this.detailModelDTOName}();
-    try {
-      dto = new ${this.detailModelDTOName}(await this.api.getDetail({ id: params.id }));
-    } catch (e) {}
-    return dto;
-  }
+  }`
+}
+${
+  this.iDetailModelDTOName &&
+  `async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
+        let dto = new ${this.detailModelDTOName}();
+        try {
+          dto = new ${this.detailModelDTOName}(await this.api.getDetail({ id: params.id }));
+        } catch (e) {}
+        return dto;
+    }`
+}
 }`;
     this.serviceCode = str;
   }
   convertIControllerCode() {
     let str = `import { IPagination } from "../models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName &&
+  `import { ${this.iListModelDTOName} } from "../models/dto/${this.iListModelDTOName}";`
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
+
 import { IPaginationParams } from "../models/param/IPaginationParams";
 
 /**
  * @description ${this.iControllerName}
  */
 export interface ${this.iControllerName} {
-  /**
+${
+  this.iListModelDTOName &&
+  `/**
    * @description getList
    */
-  getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>>;
-  /**
-   * @description getDetail
-   */
-  getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;
+   getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>>;`
+}
+${
+  this.detailModelDTOName &&
+  `/**
+    * @description getDetail
+    */
+    getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}>;`
+}
 }`;
     this.iControllerCode = str;
   }
 
   convertControllerCode() {
     let str = `import { AbsBaseController } from "../infrastructure/abstract/controllers/BaseController";
-import { ${this.iControllerName} } from "../interface/controllers/${this.iControllerName}";
+import { ${this.iControllerName} } from "../interface/controllers/${
+      this.iControllerName
+    }";
 import { IPagination } from "../interface/models/base/IPaginationT";
-import { ${this.iListModelDTOName} } from "../interface/models/dto/${this.iListModelDTOName}";
+${
+  this.iListModelDTOName &&
+  `import { ${this.iListModelDTOName} } from "../interface/models/dto/${this.iListModelDTOName}";`
+}
+${
+  this.iDetailModelDTOName &&
+  this.iDetailModelDTOName !== this.iListModelDTOName
+    ? `import { ${this.iDetailModelDTOName} } from "../interface/models/dto/${this.iDetailModelDTOName}";`
+    : ""
+}
 import { IPaginationParams } from "../interface/models/param/IPaginationParams";
-import { ${this.iServiceName} } from "../interface/services/${this.iServiceName}";
+import { ${this.iServiceName} } from "../interface/services/${
+      this.iServiceName
+    }";
 import { ${this.serviceName} } from "../services/${this.serviceName}";
 
 export class ${this.controllerName}
@@ -192,13 +287,19 @@ export class ${this.controllerName}
     this.service = new ${this.serviceName}();
   }
 
-  async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
-    return await this.service.getList(params);
-  }
+${
+  this.iListModelDTOName &&
+  `async getList(params: IPaginationParams): Promise<IPagination<${this.iListModelDTOName}>> {
+        return await this.service.getList(params);
+   }`
+}
 
-  async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
+${
+  this.iDetailModelDTOName &&
+  `async getDetail(params: { id: string }): Promise<${this.iDetailModelDTOName}> {
     return await this.service.getDetail(params);
-  }
+  }`
+}
 }`;
     this.controllerCode = str;
   }
@@ -247,22 +348,22 @@ const CodeView = observer(() => {
         <span>列表接口DTO</span>
         <input
           value={controller.iListModelDTOName}
-          onChange={(e) => controller.changeCommonName(e.target.value)}
+          onChange={(e) => (controller.iListModelDTOName = e.target.value)}
         ></input>
         <span>列表类DTO</span>
         <input
           value={controller.listModelDTOName}
-          onChange={(e) => controller.changeCommonName(e.target.value)}
+          onChange={(e) => (controller.listModelDTOName = e.target.value)}
         ></input>
         <span>详情接口DTO</span>
         <input
           value={controller.iDetailModelDTOName}
-          onChange={(e) => controller.changeCommonName(e.target.value)}
+          onChange={(e) => (controller.iDetailModelDTOName = e.target.value)}
         ></input>
         <span>详情类DTO</span>
         <input
           value={controller.detailModelDTOName}
-          onChange={(e) => controller.changeCommonName(e.target.value)}
+          onChange={(e) => (controller.detailModelDTOName = e.target.value)}
         ></input>
         <button onClick={() => controller.convertCode()}>生成代码</button>
       </div>
