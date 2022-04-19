@@ -37,7 +37,7 @@ class CodeController {
         str += `\t\t*/\n`;
         str += `\t\t${key}?:${this.getPropertyType(jObject[key])};\n`;
       });
-      str += `\t})`;
+      str += `\t\n}\n)`;
       str += `}`;
       console.log("classCode", this.classCode);
       this.intefaceCode = str;
