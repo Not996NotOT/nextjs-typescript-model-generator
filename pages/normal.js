@@ -34,14 +34,7 @@ class CodeController {
       keys.forEach((key) => {
         str += `\t\t${key}?:${this.getPropertyType(jObject[key])};\n`;
       });
-      str += `\t}) { \n`;
-      str += `\t\tsuper();\n`;
-      keys.forEach((key) => {
-        str += `\t\tthis.${key} = params?.${key} ?? ${this.getPropertyDeafaultValue(
-          jObject[key]
-        )};\n`;
-      });
-      str += `\t}\n`;
+      str += `\t})`;
       str += `}`;
       console.log("classCode", this.classCode);
       this.intefaceCode = str;
