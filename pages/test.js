@@ -1,4 +1,8 @@
+import {abc} from '../test'
 function Test() {
+    const a = new abc({
+        skcCode
+    })
     return (
         <div>
             Enter

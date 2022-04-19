@@ -32,6 +32,9 @@ class CodeController {
       });
       str += `\tconstructor(params?: { \n`;
       keys.forEach((key) => {
+        str += `\t\t/**\n`;
+        str += `\t\t* @description ${key}\n`;
+        str += `\t\t*/\n`;
         str += `\t\t${key}?:${this.getPropertyType(jObject[key])};\n`;
       });
       str += `\t})`;
